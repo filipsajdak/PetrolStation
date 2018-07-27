@@ -11,16 +11,16 @@ enum class FuelType
 	N02
 };
 
-static std::string fuelString[]{
-	"Diesel", "TurboDiesel", "EkoDiesel", "Pb95", "Pb98", "N02"
-};
-
 class Depot
 {
 public:
 	//These are two types of constructors (copy and instance)
 	Depot(int ID, int maxAmount, FuelType fuelType);
-	Depot(const Depot& oldDepot); 
+	Depot(const Depot& oldDepot) = delete;
+	Depot& operator=(const Depot&) = delete;
+	Depot(Depot&& oldDepot) noexcept = default;
+	Depot& operator=(Depot&&) noexcept = default;
+
 
 	//These methods are responsible for maintaining fuel in the depot, if there is an error they mark it by returning special integer value
 	//Depots cannot be overfueled or underfueled thus we can return different integer value to differ between these two states (for now 1 is overfuel -1 is underfuel)

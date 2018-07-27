@@ -5,10 +5,6 @@ Depot::Depot(int ID, int maxAmount, FuelType fuelType) : ID(ID), maxFuelAmount(m
 	
 }
 
-Depot::Depot(const Depot & oldDepot) : ID(oldDepot.ID), maxFuelAmount(oldDepot.maxFuelAmount), currentFuelAmount(0), type(oldDepot.type)
-{
-}
-
 int Depot::ReFuel(int amount)
 {
 	if (currentFuelAmount + amount <= maxFuelAmount)

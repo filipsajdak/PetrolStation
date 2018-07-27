@@ -28,15 +28,9 @@ int PetrolStation::RemoveEmployee(int ID)
 	return 0;
 }
 
-void PetrolStation::AddDepot(const Depot& depot)
-{
-	depotvec.push_back(depot);
-}
-
 void PetrolStation::AddDepot(int ID, int maxAmount, FuelType fuelType)
 {
-	auto depotToAdd = Depot(ID, maxAmount, fuelType);
-	depotvec.push_back( depotToAdd);
+	depotvec.emplace_back(ID, maxAmount, fuelType);
 }
 
 int PetrolStation::removeDepot(int ID)
