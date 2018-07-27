@@ -340,13 +340,12 @@ long unsigned int PetrolStation::GetBalance() const
 
 int PetrolStation::SellFuel(int amount, FuelType type)
 {
-	int count = 0;
-	for (auto &i : depotvec)
+	for (auto & depot : depotvec)
 	{
 		//remove fuel
-		if (depotvec[count].GetFuelType() == type)
+		if (depot.GetFuelType() == type)
 		{
-			if (depotvec[count].DeFuel(amount) == 0)
+			if (depot.DeFuel(amount) == 0)
 			{
 				//add client to the list by his ID
 				//we store copies of clients only
@@ -366,8 +365,6 @@ int PetrolStation::SellFuel(int amount, FuelType type)
 				return 0;
 			}
 		}
-		
-		count++;
 	}
 
 	return-1;
@@ -375,43 +372,38 @@ int PetrolStation::SellFuel(int amount, FuelType type)
 
 int PetrolStation::AddFuel(FuelType fuelType, int amount)
 {
-	int count = 0;
 	//check if we have enough money
 	int moneyToSubstract = GetBuyCost(fuelType) * amount;
 	if (balance - moneyToSubstract < 0)
 	{
 		return - 1;
 	}
-	for (auto &i : depotvec)
+	for (auto& depot : depotvec)
 	{
 		//add fuel
-		if (depotvec[count].GetFuelType() == fuelType)
+		if (depot.GetFuelType() == fuelType)
 		{
-			if (depotvec[count].ReFuel(amount) == 0)
+			if (depot.ReFuel(amount) == 0)
 			{
 				balance -= moneyToSubstract;
 				return 0;
 			}
 		}
-		
-		count++;
 	}	
 	return -1;
 }
 
 int PetrolStation::RefuellAll()
 {
-	int count = 0;
-	for (auto &i : depotvec)
+	for (auto& depot : depotvec)
 	{
-		int tofuel = depotvec[count].GetMaxFuelAmount() - depotvec[count].GetCurrentFuelAmount();
-		int moneyToSubstract = GetBuyCost(depotvec[count].GetFuelType()) * tofuel;
-		if (depotvec[count].ReFuel(tofuel) != 0)
+		int tofuel = depot.GetMaxFuelAmount() - depot.GetCurrentFuelAmount();
+		int moneyToSubstract = GetBuyCost(depot.GetFuelType()) * tofuel;
+		if (depot.ReFuel(tofuel) != 0)
 		{
 			return -1;
 		}
 		balance -= moneyToSubstract;
-		count++;
 	}
 	return 0;
 }
