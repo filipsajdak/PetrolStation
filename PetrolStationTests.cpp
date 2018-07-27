@@ -186,12 +186,11 @@ TEST(PetrolStation_HighLevelTests, global_test) {
 	std::string expected = "Empty cases\n10000\n-1\n-2\n0\n0\n-2\n-1\n0\ninvalidID\n-1\n-1\nNoDepot\n-1\n-1\n\n\n\nAdding Employees\n0\nRemoving nonexistent Employee: -1\nChange name from Barbara to: Stepan\n\nGet all the data for employee ID: 2\nName: Stepan\nSalary: 100\nBonusSalary: 200\nWorking Days count: 4\n\n\nAdding and removing depots \nRemoving existing depot: 0\nChecking if nonexistent depot is open: 0\nBalance after Adding fuel: \n7800\nBalance after Adding nonexistent fuel type: \n7800\n\n\nAdding tills\nRemoving an existing till: 0\nRemoving nonexistent till: -1\n\n\nGetting data from petrolstation 1: \nBalance: 4800\nEkoDiesel buy cost: 4\nCurrent open tills count: 4\nEmployee count: 2\nStation's ID: 1\nMaximum tills count :4\nNO2 sell cost: 10\nName :Benzin1\n\n\nCreating and testing clients data: \nClient1 ID: 1\nClient2 totalClientcount: 0\nClient3 fueledamount: 0\n\n\nGetting data about Depots\nCurrent fuel amount Depot1 : 300\nMax fuel amount Depot1 : 300\nIs it working Depot1 : 1\nFuelType Depot1 : Diesel\n\n\nEmptying empty Tills\n-2\n-2\n\n\nPerforming cash operations\nSelling fuel to client1: 0\nBalance after operation: 4800\nCash in till after operation :2900\nTrying to sell fuel from empty depot to client1: -1\nBalance after operation: 4800\nCash in till after operation :2900\nTrying to sell Diesel to client3: 0\nBalance after operation: 4800\nCash in till after operation :3700\nTrying to sell fuel from empty depot to client1: -1\nBalance after operation: 4800\nCash in till after operation :3700\nTry to sell fuel station does not currently have: -1\nBalance after operation: 4800\nCash in till after operation :3700\nTry to buy fuel amout above capacitance of a fuel depot: -1\nBalance after operation: 4800\nCash in till after operation :3700\n\nChecking out till 1\n0\n\nRefuelling Diesel depot \n0\n\nSelling fuel from diesel depot to client1: 0\nBalance after operation: 8100\nCash in till after operation :800\n\n\nRemoving an existing till: 0\nBalance after closing a till: 8900\n\n\nRefuelling all depots: 0\nBalance after refuelling all depots: 4500\n\n\nChecking out all tills: 0\nBalance after checking out all tills: 7000\n\n\nClosing all tills:  0\nBalance after closing all tills:  7000\n\n\nPaying all employees: 0\nBalance after paying all employees: 6010\n";
 	std::stringstream actual;
 
-	auto* rdbuf = std::cout.rdbuf();
-	std::cout.set_rdbuf(actual.rdbuf());
+	auto* rdbuf = std::cout.rdbuf(actual.rdbuf());
 
 	run();
 
-	std::cout.set_rdbuf(rdbuf);
+	std::cout.rdbuf(rdbuf);
 
 	EXPECT_THAT(actual.str(), expected);
 }

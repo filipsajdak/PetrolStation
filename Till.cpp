@@ -1,11 +1,17 @@
 #include "Till.h"
 
-Till::Till(int ID, int maxCash, int currentCash) : ID(ID), maxCash(maxCash), currentCash(currentCash)
+Till::Till(int ID, int maxCash, int currentCash) 
+	: ID(ID)
+	, maxCash(maxCash)
+	, currentCash(currentCash)
 {
-	
+
 }
 
-Till::Till(const Till & oldTill) : ID(oldTill.ID), maxCash(oldTill.maxCash), currentCash(0)
+Till::Till(const Till & oldTill) 
+	: ID(oldTill.ID)
+	, maxCash(oldTill.maxCash)
+	, currentCash(0)
 {
 	
 }

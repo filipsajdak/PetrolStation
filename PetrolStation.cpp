@@ -3,6 +3,13 @@
 PetrolStation::PetrolStation(std::string name, int ID) : ID(ID), name(name), currentOpenTillsCount(0)
 {
 	tillList = new TillList();
+
+	prices[FuelType::Diesel] = { 4, 2 };
+	prices[FuelType::TurboDiesel] = { 5, 3 };
+	prices[FuelType::EkoDiesel] = { 6, 4 };
+	prices[FuelType::Pb95] = { 3, 1 };
+	prices[FuelType::Pb98] = { 4, 1 };
+	prices[FuelType::N02] = { 10, 6 };
 }
 
 PetrolStation::~PetrolStation()
@@ -479,56 +486,12 @@ int PetrolStation::RefuellAll()
 
 int PetrolStation::GetSellCost(const FuelType type) const
 {
-	int price = 0;
-	switch (type)
-	{
-	case FuelType::Diesel:
-		price = sellPrices[0];
-		break;
-	case FuelType::TurboDiesel:
-		price = sellPrices[1];
-		break;
-	case FuelType::EkoDiesel:
-		price = sellPrices[2];
-		break;
-	case FuelType::Pb95:
-		price = sellPrices[3];
-		break;
-	case FuelType::Pb98:
-		price = sellPrices[4];
-		break;
-	case FuelType::N02:
-		price = sellPrices[5];
-		break;
-	}
-	return price;
+	return prices.at(type).sellPrice;
 }
 
 int PetrolStation::GetBuyCost(const FuelType type) const
 {
-	int price = 0;
-	switch (type)
-	{
-	case FuelType::Diesel:
-		price = buyPrices[0];
-		break;
-	case FuelType::TurboDiesel:
-		price = buyPrices[1];
-		break;
-	case FuelType::EkoDiesel:
-		price = buyPrices[2];
-		break;
-	case FuelType::Pb95:
-		price = buyPrices[3];
-		break;
-	case FuelType::Pb98:
-		price = buyPrices[4];
-		break;
-	case FuelType::N02:
-		price = buyPrices[5];
-		break;
-	}
-	return price;
+	return prices.at(type).buyPrice;
 }
 
 

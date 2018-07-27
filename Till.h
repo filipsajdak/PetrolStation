@@ -36,6 +36,6 @@ private:
 	int ID;
 	int maxCash;
 	int currentCash;
-	bool isOpen;
+	bool isOpen = true;
 	Till* next = nullptr;
 };

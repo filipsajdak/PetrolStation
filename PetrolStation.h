@@ -3,6 +3,7 @@
 #include "Client.h"
 #include "TillList.h"
 #include <vector>
+#include <map>
 
 class PetrolStation
 {
@@ -84,7 +85,11 @@ public:
 	int GetSellCost(const FuelType type)const;
 	int GetBuyCost(const FuelType type)const;
 	
-
+	struct FuelPrices
+	{
+		int sellPrice;
+		int buyPrice;
+	};
 
 private:
 	int ID;
@@ -97,8 +102,7 @@ private:
 	int currentOpenTillsCount;
 	long unsigned int balance = 10000; //they start with some balance
 	int totalFuel = 0; 
-	int sellPrices[6] = { 4, 5, 6, 3, 4, 10 };
-	int buyPrices[6] = { 2, 3, 4 , 1, 1, 6 };
+	std::map<FuelType, FuelPrices> prices;
 	//Returns index of given employee in the vector or returns -1 to indicate there is no such employee
 	int GetEmployeeIndex(int ID);
 	int GetDepotIndex(int ID);
