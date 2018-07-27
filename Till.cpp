@@ -11,7 +11,7 @@ Till::Till(int ID, int maxCash, int currentCash)
 Till::Till(const Till & oldTill) 
 	: ID(oldTill.ID)
 	, maxCash(oldTill.maxCash)
-	, currentCash(0)
+	, currentCash(oldTill.currentCash)
 {
 	
 }

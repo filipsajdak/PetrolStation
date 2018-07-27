@@ -1,18 +1,13 @@
 #pragma once
 #include "Till.h"
+#include <map>
 class TillList
 {
 public:
-	//TillList has its own 
-	TillList();
-	~TillList();
-	TillList(const TillList& newTill);
-	TillList& operator=(const TillList& newTill);
-
 	//Returns pointer to the Till of particular ID
-	Till* FindTill(int ID)const;
+	Till* FindTill(int ID);
 	//Returns a pointer to a first open till
-	Till* FindFirstOpenTill()const;
+	Till* FindFirstOpenTill();
 	//Tells us whether the Till of current ID is open, if a till of particular ID does not exist it returns false
 	bool CheckTillIsOpen(int ID);
 
@@ -42,6 +37,5 @@ public:
 
 	
 private:
-	Till* head = nullptr;
-	int count;
+	std::map<int, Till> tills;
 };
