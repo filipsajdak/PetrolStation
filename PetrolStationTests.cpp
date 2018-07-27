@@ -30,9 +30,9 @@ struct PetrolStationFixtureTests : ::testing::Test {
 	PetrolStation p{ "Benzin1", 1 };
 
 	void SetUp() override {
-		p.AddEmployee("John", 100, 200, 3, 1);
-		p.AddEmployee("Barbara", 200, 300, 4, 2);
-		p.AddEmployee("Tadeus", 130, 560, 4, 3);
+		p.AddEmployee({ "John", 100, 200, 3, 1 });
+		p.AddEmployee({ "Barbara", 200, 300, 4, 2 });
+		p.AddEmployee({ "Tadeus", 130, 560, 4, 3 });
 	}
 
 };

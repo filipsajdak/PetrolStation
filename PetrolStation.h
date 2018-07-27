@@ -9,9 +9,6 @@ class PetrolStation
 {
 public:
 	PetrolStation(std::string name, int ID);
-	//Functions responsible for adding and removing employees from employeevec associated with this instance of PetrolStation
-	//There are two Add functions because we can add either by creating a new employee or adding a copy of already existent one
-	void AddEmployee(std::string name, int salary, int bonusSalary, int workingDaysCount, int ID);
 	void AddEmployee(const Employee& emp);
 	//Removing is performed by ID only, the corresponding employee is looked up in the employeevec and then removed
 	int RemoveEmployee(int ID);

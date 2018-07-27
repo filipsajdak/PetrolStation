@@ -11,12 +11,6 @@ PetrolStation::PetrolStation(std::string name, int ID) : ID(ID), name(name), cur
 	prices[FuelType::N02] = { 10, 6 };
 }
 
-void PetrolStation::AddEmployee(std::string name, int salary, int bonusSalary, int workingDaysCount, int ID)
-{
-	Employee emp = Employee(name, salary, bonusSalary, workingDaysCount, ID);
-	employeevec.push_back(emp);
-}
-
 void PetrolStation::AddEmployee(const Employee & emp)
 {
 	employeevec.push_back(emp);
