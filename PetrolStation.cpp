@@ -186,23 +186,6 @@ int PetrolStation::SetEmployeeWorkingDaysCount(int ID, int count)
 	return -1;
 }
 
-int PetrolStation::PayEmployee(int ID)
-{
-	int i = GetEmployeeIndex(ID);
-	if (i != -1)
-	{
-		int topay = employeevec[i].GetSalary() + employeevec[i].GetBonusSalary();
-		if ((balance - topay) >= 0)
-		{
-			balance -= topay;
-			employeevec[i].AddBalance(topay);
-			return 0;
-		}
-		return -2;
-	}
-	return -1;
-}
-
 int PetrolStation::PayAllEmployees()
 {
 	for (size_t i = 0; i < employeevec.size(); i++)

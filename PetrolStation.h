@@ -25,7 +25,6 @@ public:
 	int GetEmployeeWorkingDaysCount(int ID);
 	int SetEmployeeWorkingDaysCount(int ID, int count);
 	//Pays employee his monthly salary + bonussalary
-	int PayEmployee(int ID);
 	int PayAllEmployees();
 
 	//These functions are responsible for adding and removing Depots from the depotMap, similarly as with employees they can be constructed in two distinct ways
