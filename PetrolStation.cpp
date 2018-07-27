@@ -400,7 +400,7 @@ long unsigned int PetrolStation::GetBalance() const
 	return balance;
 }
 
-int PetrolStation::SellFuel(const Client& client, int amount, FuelType type)
+int PetrolStation::SellFuel(int amount, FuelType type)
 {
 	if (!tillList) { return -3; }
 	int count = 0;
@@ -425,10 +425,7 @@ int PetrolStation::SellFuel(const Client& client, int amount, FuelType type)
 				{
 					return -4;
 				}
-				
-				auto newClient = Client(client);
-				clientvec.push_back(newClient);
-				newClient.AddFueledAmount(amount);
+
 				totalFuel -= amount; 
 				return 0;
 			}

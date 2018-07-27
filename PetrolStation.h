@@ -1,7 +1,7 @@
 #pragma once
 #include "Depot.h"
-#include "Client.h"
 #include "TillList.h"
+#include "Employee.h"
 #include <vector>
 #include <map>
 
@@ -72,7 +72,7 @@ public:
 	//Most prominent function - it performs purchasing of fuel by a Client and adequately calls all other functions responsible for fuel/money management
 	//It searches for the first open till and performs cash operations on it, it also searches for first open depot of the required FuelType
 	//It returns integer value because we may be unable to perform required fuel withdrawal operation due to lack of fuel (1 for failure and 0 for success)
-	int SellFuel(const Client& client, int amount, FuelType type);
+	int SellFuel(int amount, FuelType type);
 
 	//This function is the counterpart of SellFuel function, it is responsible for refuelling empty depots, it's integer return value (1 for failure and 0 for success), because
 	//we may be unable to perform that operation, due to lack of particular fuel type depots or volume in our depots
@@ -95,7 +95,6 @@ private:
 	int ID;
 	int employeeCount = 0;
 	std::string name;
-	std::vector<Client> clientvec;
 	std::vector<Employee> employeevec;
 	std::vector<Depot> depotvec;
 	TillList* tillList = nullptr;
