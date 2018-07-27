@@ -1,6 +1,6 @@
 #include "Till.h"
 
-Till::Till(int ID, int maxCash, int currentCash) 
+Till::Till(int ID, Money maxCash, Money currentCash)
 	: ID(ID)
 	, maxCash(maxCash)
 	, currentCash(currentCash)
@@ -22,7 +22,7 @@ Till::~Till()
 	DepositCash(currentCash);
 }
 
-int Till::DepositCash(int amount)
+int Till::DepositCash(Money amount)
 {
 	if (currentCash + amount <= maxCash)
 	{
@@ -35,7 +35,7 @@ int Till::DepositCash(int amount)
 	}
 }
 
-int Till::DrawCash(int amount)
+int Till::DrawCash(Money amount)
 {
 	if (currentCash - amount >= 0)
 	{
@@ -48,12 +48,12 @@ int Till::DrawCash(int amount)
 	}
 }
 
-int Till::GetCurrentCash() const
+Money Till::GetCurrentCash() const
 {
 	return currentCash;
 }
 
-int Till::GetMaxCash() const
+Money Till::GetMaxCash() const
 {
 	return maxCash;
 }

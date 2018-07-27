@@ -267,7 +267,7 @@ int PetrolStation::RemoveTill(int ID)
 	{
 		return -1;
 	}
-	int currmoney = till->GetCurrentCash();
+	auto currmoney = till->GetCurrentCash();
 	int i = tillList.RemoveTill(ID);
 	if (i == 0)
 	{
@@ -309,7 +309,7 @@ int PetrolStation::CheckoutTill(int ID)
 	{
 		return -2;
 	}
-	int toSubstract = tillptr->GetCurrentCash();
+	auto toSubstract = tillptr->GetCurrentCash();
 	if (tillptr->DrawCash(toSubstract) != 0)
 	{
 		return -1;
@@ -318,7 +318,7 @@ int PetrolStation::CheckoutTill(int ID)
 	return 0;
 }
 
-int PetrolStation::GetMoneyInTill(int ID)
+Money PetrolStation::GetMoneyInTill(int ID)
 {
 	Till* tillptr = tillList.FindTill(ID);
 	if (!tillptr)
@@ -330,19 +330,19 @@ int PetrolStation::GetMoneyInTill(int ID)
 
 int PetrolStation::CheckoutAllTills()
 {
-	int toadd = tillList.GetTotalMoneyInTills();
+	auto toadd = tillList.GetTotalMoneyInTills();
 	balance += toadd;
 	return tillList.CheckoutAllTills();
 }
 
 int PetrolStation::CloseAllTills()
 {
-	int toadd = tillList.GetTotalMoneyInTills();
+	auto toadd = tillList.GetTotalMoneyInTills();
 	balance += toadd;
 	return tillList.CloseAllTills();
 }
 
-long unsigned int PetrolStation::GetBalance() const
+Money PetrolStation::GetBalance() const
 {
 	return balance;
 }
@@ -376,7 +376,7 @@ int PetrolStation::SellFuel(int amount, FuelType type)
 int PetrolStation::AddFuel(FuelType fuelType, int amount)
 {
 	//check if we have enough money
-	int moneyToSubstract = GetBuyCost(fuelType) * amount;
+	auto moneyToSubstract = GetBuyCost(fuelType) * amount;
 	if (balance - moneyToSubstract < 0)
 	{
 		return - 1;
@@ -398,7 +398,7 @@ int PetrolStation::RefuellAll()
 	for (auto& depot : depotvec)
 	{
 		int tofuel = depot.GetMaxFuelAmount() - depot.GetCurrentFuelAmount();
-		int moneyToSubstract = GetBuyCost(depot.GetFuelType()) * tofuel;
+		auto moneyToSubstract = GetBuyCost(depot.GetFuelType()) * tofuel;
 		if (depot.ReFuel(tofuel) != 0)
 		{
 			return -1;
@@ -408,12 +408,12 @@ int PetrolStation::RefuellAll()
 	return 0;
 }
 
-int PetrolStation::GetSellCost(const FuelType type) const
+Money PetrolStation::GetSellCost(const FuelType type) const
 {
 	return prices.at(type).sellPrice;
 }
 
-int PetrolStation::GetBuyCost(const FuelType type) const
+Money PetrolStation::GetBuyCost(const FuelType type) const
 {
 	return prices.at(type).buyPrice;
 }

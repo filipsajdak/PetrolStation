@@ -62,9 +62,9 @@ int TillList::CloseAllTills()
 	return 0;
 }
 
-int TillList::GetTotalMoneyInTills()
+Money TillList::GetTotalMoneyInTills()
 {
-	int money = 0;
+	Money money = 0;
 	for (auto& till : tills)
 	{
 		money += till.second.GetCurrentCash();
@@ -77,7 +77,7 @@ int TillList::AddTill(const Till & till)
 	return AddTill(till.GetID(), till.GetMaxCash(), till.GetCurrentCash());
 }
 
-int TillList::AddTill(int ID, int maxCash, int currentCash)
+int TillList::AddTill(int ID, Money maxCash, Money currentCash)
 {
 	auto it = tills.insert(std::make_pair(ID, Till(ID, maxCash, currentCash)));
 	return it.second ? 0 : -1;

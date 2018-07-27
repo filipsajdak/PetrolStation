@@ -4,6 +4,7 @@
 #include "Employee.h"
 #include <vector>
 #include <map>
+#include "Money.h"
 
 class PetrolStation
 {
@@ -44,7 +45,7 @@ public:
 	//Returns the station's ID
 	int GetID()const;
 	//Returns total balance of this instance of PetrolStation
-	long unsigned int GetBalance() const;
+	Money GetBalance() const;
 	//Returns current amount of open tills in tillList
 	int GetCurrentOpenTillsCount() const;
 	//Returns total amount of tills assigned to this station (both open and closed)
@@ -59,7 +60,7 @@ public:
 	int OpenTill(int ID);
 	int CloseTill(int ID);
 	int CheckoutTill(int ID);
-	int GetMoneyInTill(int ID);
+	Money GetMoneyInTill(int ID);
 	int CheckoutAllTills();
 	int CloseAllTills();
 
@@ -76,13 +77,15 @@ public:
 	int RefuellAll();
 
 	//These functions return the cost of deemed type of fuel dependent on current course of petrol type
-	int GetSellCost(const FuelType type)const;
-	int GetBuyCost(const FuelType type)const;
+	Money GetSellCost(const FuelType type)const;
+	Money GetBuyCost(const FuelType type)const;
 	
+	
+
 	struct FuelPrices
 	{
-		int sellPrice;
-		int buyPrice;
+		Money sellPrice;
+		Money buyPrice;
 	};
 
 private:
@@ -92,7 +95,7 @@ private:
 	std::vector<Depot> depotvec;
 	TillList tillList;
 	int currentOpenTillsCount;
-	long unsigned int balance = 10000; //they start with some balance
+	Money balance = 10000; //they start with some balance
 	std::map<FuelType, FuelPrices> prices;
 	//Returns index of given employee in the vector or returns -1 to indicate there is no such employee
 	int GetEmployeeIndex(int ID);

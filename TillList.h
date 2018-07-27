@@ -17,12 +17,12 @@ public:
 	int CheckoutAllTills();
 	int CloseAllTills();
 
-	int GetTotalMoneyInTills();
+	Money GetTotalMoneyInTills();
 	//These functions are responsible for managing the tills in the List
 	//They keep the list sorted by ID for convenience
 	//If we add Till by the same ID they return int value -1
 	int AddTill(const Till& till);
-	int AddTill(int ID, int maxCash, int currentCash);
+	int AddTill(int ID, Money maxCash, Money currentCash);
 
 	//Removes a Till of particular ID from the list, returns an integer value which tells us whether we successfully removed the till or not (1 for an error, 0 for a success)
 	int RemoveTill(Till* till);
