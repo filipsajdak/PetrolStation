@@ -2,7 +2,6 @@
 
 PetrolStation::PetrolStation(std::string name, int ID) : ID(ID), name(name), currentOpenTillsCount(0)
 {
-	tillList = new TillList();
 
 	prices[FuelType::Diesel] = { 4, 2 };
 	prices[FuelType::TurboDiesel] = { 5, 3 };
@@ -12,22 +11,15 @@ PetrolStation::PetrolStation(std::string name, int ID) : ID(ID), name(name), cur
 	prices[FuelType::N02] = { 10, 6 };
 }
 
-PetrolStation::~PetrolStation()
-{
-	delete tillList;
-}
-
 void PetrolStation::AddEmployee(std::string name, int salary, int bonusSalary, int workingDaysCount, int ID)
 {
 	Employee emp = Employee(name, salary, bonusSalary, workingDaysCount, ID);
 	employeevec.push_back(emp);
-	employeeCount++;
 }
 
 void PetrolStation::AddEmployee(const Employee & emp)
 {
 	employeevec.push_back(emp);
-	employeeCount++;
 }
 
 
@@ -39,7 +31,6 @@ int PetrolStation::RemoveEmployee(int ID)
 		return -1;
 	}
 	employeevec.erase(employeevec.begin() + i);
-	employeeCount--;
 	return 0;
 }
 
@@ -118,7 +109,7 @@ int PetrolStation::GetID() const
 
 int PetrolStation::GetEmployeeCount() const
 {
-	return employeeCount;
+	return employeevec.size();
 }
 
 int PetrolStation::GetEmployeeSalary(int ID)
@@ -263,20 +254,6 @@ int PetrolStation::GetDepotIndex(int ID)
 	return -1;
 }
 
-/*Employee & PetrolStation::GetEmployeeUnderIndex(int index)
-{
-	int ind = GetEmployeeIndex(index);
-	if (ind != -1)
-	{
-		return employeevec[ind];
-	}
-	else
-	{
-		return employeevec[0];
-	}
-}
-*/
-
 int PetrolStation::GetCurrentOpenTillsCount() const
 {
 	return currentOpenTillsCount;
@@ -284,14 +261,12 @@ int PetrolStation::GetCurrentOpenTillsCount() const
 
 int PetrolStation::GetMaximumTills() const
 {
-	if (!tillList) { return -3; }
-	return tillList->GetTillCount();
+	return tillList.GetTillCount();
 }
 
 void PetrolStation::AddTill(int ID, int maxCash, int currentCash)
 {
-	if (!tillList) { return; }
-	int i = tillList->AddTill(ID, maxCash, currentCash);
+	int i = tillList.AddTill(ID, maxCash, currentCash);
 	balance -= currentCash;
 	if (i == 0)
 	{
@@ -302,20 +277,18 @@ void PetrolStation::AddTill(int ID, int maxCash, int currentCash)
 
 void PetrolStation::AddTill(const Till& till)
 {
-	if (!tillList) { return; }
-	tillList->AddTill(till);
+	tillList.AddTill(till);
 }
 
 int PetrolStation::RemoveTill(int ID)
 {
-	if (!tillList) { return -3; }
-	Till* till = tillList->FindTill(ID);
+	Till* till = tillList.FindTill(ID);
 	if (!till)
 	{
 		return -1;
 	}
 	int currmoney = till->GetCurrentCash();
-	int i = tillList->RemoveTill(ID);
+	int i = tillList.RemoveTill(ID);
 	if (i == 0)
 	{
 		balance += currmoney;
@@ -326,8 +299,7 @@ int PetrolStation::RemoveTill(int ID)
 
 int PetrolStation::OpenTill(int ID)
 {
-	if (!tillList) { return -3; }
-	int i = tillList->OpenTill(ID);
+	int i = tillList.OpenTill(ID);
 	if (i == 0)
 	{
 		currentOpenTillsCount++;
@@ -337,9 +309,8 @@ int PetrolStation::OpenTill(int ID)
 
 int PetrolStation::CloseTill(int ID)
 {
-	if (!tillList) { return -3; }
 	CheckoutTill(ID);
-	if (tillList->CloseTill(ID) != 0)
+	if (tillList.CloseTill(ID) != 0)
 	{
 		return -1;
 	}
@@ -353,8 +324,7 @@ int PetrolStation::CloseTill(int ID)
 
 int PetrolStation::CheckoutTill(int ID)
 {
-	if (!tillList) { return -3; }
-	Till* tillptr = tillList->FindTill(ID);
+	Till* tillptr = tillList.FindTill(ID);
 	if (!tillptr)
 	{
 		return -2;
@@ -370,8 +340,7 @@ int PetrolStation::CheckoutTill(int ID)
 
 int PetrolStation::GetMoneyInTill(int ID)
 {
-	if (!tillList) { return -3; }
-	Till* tillptr = tillList->FindTill(ID);
+	Till* tillptr = tillList.FindTill(ID);
 	if (!tillptr)
 	{
 		return -2;
@@ -381,18 +350,16 @@ int PetrolStation::GetMoneyInTill(int ID)
 
 int PetrolStation::CheckoutAllTills()
 {
-	if (!tillList) { return-2; }
-	int toadd = tillList->GetTotalMoneyInTills();
+	int toadd = tillList.GetTotalMoneyInTills();
 	balance += toadd;
-	return tillList->CheckoutAllTills();
+	return tillList.CheckoutAllTills();
 }
 
 int PetrolStation::CloseAllTills()
 {
-	if (!tillList) { return-2; }
-	int toadd = tillList->GetTotalMoneyInTills();
+	int toadd = tillList.GetTotalMoneyInTills();
 	balance += toadd;
-	return tillList->CloseAllTills();
+	return tillList.CloseAllTills();
 }
 
 long unsigned int PetrolStation::GetBalance() const
@@ -402,7 +369,6 @@ long unsigned int PetrolStation::GetBalance() const
 
 int PetrolStation::SellFuel(int amount, FuelType type)
 {
-	if (!tillList) { return -3; }
 	int count = 0;
 	for (auto &i : depotvec)
 	{
@@ -415,7 +381,7 @@ int PetrolStation::SellFuel(int amount, FuelType type)
 				//we store copies of clients only
 
 				//search for a free Till;
-				auto openTill = tillList->FindFirstOpenTill();
+				auto openTill = tillList.FindFirstOpenTill();
 				if (!openTill)
 				{
 					return -2;
