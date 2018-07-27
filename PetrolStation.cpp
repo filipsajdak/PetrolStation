@@ -392,7 +392,6 @@ int PetrolStation::SellFuel(int amount, FuelType type)
 					return -4;
 				}
 
-				totalFuel -= amount; 
 				return 0;
 			}
 		}
@@ -419,7 +418,6 @@ int PetrolStation::AddFuel(FuelType fuelType, int amount)
 		{
 			if (depotvec[count].ReFuel(amount) == 0)
 			{
-				totalFuel += amount; 
 				balance -= moneyToSubstract;
 				return 0;
 			}
