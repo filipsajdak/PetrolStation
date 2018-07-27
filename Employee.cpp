@@ -1,20 +1,12 @@
 #include "Employee.h"
 
-Employee::Employee(std::string name, int salary, int bonusSalary, int workingDaysCount, int ID) : name(name), salary(salary), bonusSalary(bonusSalary), workingDaysCount(workingDaysCount), ID(ID)
-{
-
-}
-
-Employee::Employee(const Employee & empl)
-{
-	name = empl.name;
-	salary = empl.salary;
-	bonusSalary = empl.bonusSalary;
-	workingDaysCount = empl.workingDaysCount;
-	ID = empl.ID;
-}
-
-Employee::~Employee()
+Employee::Employee(std::string name, int salary, int bonusSalary, int workingDaysCount, int ID) 
+	: ID(ID)
+	, salary(salary)
+	, bonusSalary(bonusSalary)
+	, balance(0)
+	, workingDaysCount(workingDaysCount)
+	, name(name)
 {
 }
 

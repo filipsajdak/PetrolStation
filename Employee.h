@@ -7,8 +7,8 @@ class Employee
 public:
 	//Constructor and destructor
 	Employee(std::string name, int salary, int bonusSalary, int workingDaysCount, int ID); 
-	Employee(const Employee& empl);
-	~Employee();
+	Employee(const Employee& empl) = default;
+	~Employee() = default;
 
 	//Simple getters and setters
 	int GetSalary() const;

@@ -28,15 +28,13 @@ TillList & TillList::operator=(const TillList & newTill)
 Till * TillList::FindTill(int ID) const
 {
 	Till* tillptr = head;
-	Till* tmp = head;
 	while (tillptr)
 	{
 		if (tillptr->GetID() == ID)
 		{
 			return tillptr;
 		}
-		tmp = tillptr->GetNext();
-		tillptr = tmp;
+		tillptr = tillptr->GetNext();
 	}
 	return nullptr;
 }
@@ -44,15 +42,13 @@ Till * TillList::FindTill(int ID) const
 Till * TillList::FindFirstOpenTill() const
 {
 	Till* tillptr = head;
-	Till* tmp = head;
 	while (tillptr)
 	{
 		if (tillptr->IsOpen())
 		{
 			return tillptr;
 		}
-		tmp = tillptr->GetNext();
-		tillptr->SetNext(tmp);
+		tillptr = tillptr->GetNext();
 	}
 	return nullptr;
 }
@@ -181,17 +177,14 @@ int TillList::RemoveTill(int ID)
 {
 	Till* prevTill = FindTill(ID - 1);
 	Till* tillToRemove = FindTill(ID);
-	Till* tmp = head;
-	Till* tmp2 = head;
 	if (!tillToRemove)
 	{
 		return -1;
 	}
 	if (tillToRemove == head)
 	{
-		tmp2 = head->GetNext();
 		tillToRemove = head;
-		head = tmp2;
+		head = head->GetNext();
 		delete tillToRemove;
 		count--;
 		return 0;
