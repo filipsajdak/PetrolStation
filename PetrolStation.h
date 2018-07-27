@@ -97,6 +97,11 @@ private:
 	//Returns index of given employee in the vector or returns -1 to indicate there is no such employee
 	int GetEmployeeIndex(int ID);
 	int GetDepotIndex(int ID);
+
+	auto FindDepotWithEnoughFuel(int amount, FuelType type);
+
+	
+
 	//Returns employee under given index, or if there is none we change data of the arbitrary 0th employee
 	//Employee& GetEmployeeUnderIndex(int index);
 };

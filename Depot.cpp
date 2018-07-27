@@ -20,7 +20,7 @@ int Depot::ReFuel(int amount)
 
 int Depot::DeFuel(int amount)
 {
-	if (currentFuelAmount - amount >= 0)
+	if (currentFuelAmount >= amount)
 	{
 		currentFuelAmount -= amount;
 		return 0;

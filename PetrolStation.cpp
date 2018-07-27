@@ -1,8 +1,8 @@
 #include "PetrolStation.h"
+#include <algorithm>
 
 PetrolStation::PetrolStation(std::string name, int ID) : ID(ID), name(name), currentOpenTillsCount(0)
 {
-
 	prices[FuelType::Diesel] = { 4, 2 };
 	prices[FuelType::TurboDiesel] = { 5, 3 };
 	prices[FuelType::EkoDiesel] = { 6, 4 };
@@ -225,6 +225,15 @@ int PetrolStation::GetDepotIndex(int ID)
 	return -1;
 }
 
+inline auto PetrolStation::FindDepotWithEnoughFuel(int amount, FuelType type)
+{
+	return std::find_if(std::begin(depotvec), std::end(depotvec),
+		[=](auto const& depot)
+	{
+		return depot.GetFuelType() == type && depot.GetCurrentFuelAmount() >= amount;
+	});
+}
+
 int PetrolStation::GetCurrentOpenTillsCount() const
 {
 	return currentOpenTillsCount;
@@ -340,34 +349,28 @@ long unsigned int PetrolStation::GetBalance() const
 
 int PetrolStation::SellFuel(int amount, FuelType type)
 {
-	for (auto & depot : depotvec)
+	auto result = FindDepotWithEnoughFuel(amount, type);
+	if (result == std::end(depotvec))
 	{
-		//remove fuel
-		if (depot.GetFuelType() == type)
-		{
-			if (depot.DeFuel(amount) == 0)
-			{
-				//add client to the list by his ID
-				//we store copies of clients only
-
-				//search for a free Till;
-				auto openTill = tillList.FindFirstOpenTill();
-				if (!openTill)
-				{
-					return -2;
-				}
-				//add cash to till
-				if (openTill->DepositCash(amount*GetSellCost(type)) != 0)
-				{
-					return -4;
-				}
-
-				return 0;
-			}
-		}
+		return -1;
 	}
 
-	return-1;
+	auto & depot = *result;
+	depot.DeFuel(amount);
+
+	//search for a free Till;
+	auto openTill = tillList.FindFirstOpenTill();
+	if (!openTill)
+	{
+		return -2;
+	}
+	//add cash to till
+	if (openTill->DepositCash(amount * GetSellCost(type)) != 0)
+	{
+		return -4;
+	}
+
+	return 0;
 }
 
 int PetrolStation::AddFuel(FuelType fuelType, int amount)
@@ -381,13 +384,10 @@ int PetrolStation::AddFuel(FuelType fuelType, int amount)
 	for (auto& depot : depotvec)
 	{
 		//add fuel
-		if (depot.GetFuelType() == fuelType)
+		if (depot.GetFuelType() == fuelType && depot.ReFuel(amount) == 0)
 		{
-			if (depot.ReFuel(amount) == 0)
-			{
-				balance -= moneyToSubstract;
-				return 0;
-			}
+			balance -= moneyToSubstract;
+			return 0;
 		}
 	}	
 	return -1;
