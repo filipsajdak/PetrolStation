@@ -1,24 +1,24 @@
 #pragma once
 #include <iostream>
-//#include <string>
+#include "Money.h"
 
 class Employee
 {
 public:
 	//Constructor and destructor
-	Employee(std::string name, int salary, int bonusSalary, int workingDaysCount, int ID); 
+	Employee(std::string name, Money salary, Money bonusSalary, int workingDaysCount, int ID);
 	Employee(const Employee& empl) = default;
 	~Employee() = default;
 
 	//Simple getters and setters
-	int GetSalary() const;
-	void SetSalary(int amount);
+	Money GetSalary() const;
+	void SetSalary(Money amount);
 
-	int AddBalance(int amount);
+	int AddBalance(Money amount);
 
 	//Simple getters and setters
-	int GetBonusSalary()const;
-	void SetBonusSalary(int amount);
+	Money GetBonusSalary()const;
+	void SetBonusSalary(Money amount);
 
 	//Simple getters and setters
 	std::string GetName()const;
@@ -33,9 +33,9 @@ public:
 
 private:
 	int ID;
-	int salary;
-	int bonusSalary;
-	int balance = 0;
+	Money salary;
+	Money bonusSalary;
+	Money balance{ 0 };
 	int workingDaysCount;
 	std::string name;
 };

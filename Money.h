@@ -2,41 +2,40 @@
 class Money
 {
 public:
-	Money(int value = 0) : value(value)
+	constexpr explicit Money(int value = 0) : value(value)
 	{}
 
-	friend Money operator*(int amount, Money cost)
+	friend constexpr Money operator*(int amount, Money cost) noexcept
 	{
-		return amount * cost.value;
+		return  Money(amount * cost.value);
 	}
-	Money operator*(int amount)
+	constexpr Money operator*(int amount) const noexcept
 	{
-		return amount * value;
+		return Money(amount * value);
 	}
-	Money operator+(Money m)
+	constexpr Money operator+(Money m) const noexcept
 	{
-		return m.value + value;
+		return Money(m.value + value);
 	}
-	Money operator-(Money m)
+	constexpr Money operator-(Money m) const noexcept
 	{
-		return value - m.value;
+		return Money(value - m.value);
 	}
-	Money& operator-=(Money m)
+	constexpr Money& operator-=(Money m) noexcept
 	{
 		value -= m.value;
 		return *this;
 	}
-	Money& operator+=(Money m)
+	constexpr Money& operator+=(Money m) noexcept
 	{
 		value += m.value;
 		return *this;
 	}
-	bool operator<(Money m) const { return value < m.value; }
-	bool operator==(Money m) const { return value == m.value; }
-	bool operator<=(Money m) const { return value <= m.value; }
-	bool operator>=(Money m) const { return value >= m.value; }
-	bool operator>(Money m) const { return value > m.value; }
-
+	constexpr bool operator<(Money m)  const noexcept { return value < m.value; }
+	constexpr bool operator==(Money m) const noexcept { return value == m.value; }
+	constexpr bool operator<=(Money m) const noexcept { return value <= m.value; }
+	constexpr bool operator>=(Money m) const noexcept { return value >= m.value; }
+	constexpr bool operator>(Money m)  const noexcept { return value > m.value; }
 
 private:
 	int value;

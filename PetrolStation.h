@@ -17,10 +17,10 @@ public:
 	int GetEmployeeCount() const;
 	//Functions that make possible to perform operations on employee
 	//int value of -1 means there is no such employee, 0 means success
-	int GetEmployeeSalary(int ID);
-	int SetEmployeeSalary(int ID, int amount);
-	int GetEmployeeBonusSalary(int ID);
-	int SetEmployeeBonusSalary(int ID, int amount);
+	Money GetEmployeeSalary(int ID);
+	int SetEmployeeSalary(int ID, Money amount);
+	Money GetEmployeeBonusSalary(int ID);
+	int SetEmployeeBonusSalary(int ID, Money amount);
 	std::string GetEmployeeName(int ID);
 	int ChangeEmployeeName(int ID, std::string name);
 	int GetEmployeeWorkingDaysCount(int ID);
@@ -52,7 +52,7 @@ public:
 	int GetMaximumTills() const;
 
 	//These methods are responsible for managing(adding and removing tills from the TillList)
-	void AddTill(int ID, int maxCash, int currentCash);
+	void AddTill(int ID, Money maxCash, Money currentCash);
 	void AddTill(const Till& till);
 	int RemoveTill(int ID);
 
@@ -79,8 +79,8 @@ public:
 	//These functions return the cost of deemed type of fuel dependent on current course of petrol type
 	Money GetSellCost(const FuelType type)const;
 	Money GetBuyCost(const FuelType type)const;
-	
-	
+
+
 
 	struct FuelPrices
 	{
@@ -95,7 +95,7 @@ private:
 	std::vector<Depot> depotvec;
 	TillList tillList;
 	int currentOpenTillsCount;
-	Money balance = 10000; //they start with some balance
+	Money balance{10000}; //they start with some balance
 	std::map<FuelType, FuelPrices> prices;
 	//Returns index of given employee in the vector or returns -1 to indicate there is no such employee
 	int GetEmployeeIndex(int ID);

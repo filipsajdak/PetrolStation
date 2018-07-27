@@ -1,6 +1,6 @@
 #include "Employee.h"
 
-Employee::Employee(std::string name, int salary, int bonusSalary, int workingDaysCount, int ID) 
+Employee::Employee(std::string name, Money salary, Money bonusSalary, int workingDaysCount, int ID)
 	: ID(ID)
 	, salary(salary)
 	, bonusSalary(bonusSalary)
@@ -10,29 +10,29 @@ Employee::Employee(std::string name, int salary, int bonusSalary, int workingDay
 {
 }
 
-int Employee::GetSalary() const
+Money Employee::GetSalary() const
 {
 	return salary;
 }
 
-void Employee::SetSalary(int amount)
+void Employee::SetSalary(Money amount)
 {
 	salary = amount;
 }
 
-int Employee::AddBalance(int amount)
+int Employee::AddBalance(Money amount)
 {
-	if (balance < 0) { return -1; }
+	if (balance < Money{ 0 }) { return -1; }
 	balance += amount;
 	return 0;
 }
 
-int Employee::GetBonusSalary() const
+Money Employee::GetBonusSalary() const
 {
 	return bonusSalary;
 }
 
-void Employee::SetBonusSalary(int amount)
+void Employee::SetBonusSalary(Money amount)
 {
 	bonusSalary = amount;
 }

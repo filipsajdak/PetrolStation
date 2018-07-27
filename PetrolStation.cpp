@@ -3,12 +3,12 @@
 
 PetrolStation::PetrolStation(std::string name, int ID) : ID(ID), name(name), currentOpenTillsCount(0)
 {
-	prices[FuelType::Diesel] = { 4, 2 };
-	prices[FuelType::TurboDiesel] = { 5, 3 };
-	prices[FuelType::EkoDiesel] = { 6, 4 };
-	prices[FuelType::Pb95] = { 3, 1 };
-	prices[FuelType::Pb98] = { 4, 1 };
-	prices[FuelType::N02] = { 10, 6 };
+	prices[FuelType::Diesel] = { Money{4}, Money{2} };
+	prices[FuelType::TurboDiesel] = { Money{5}, Money{3} };
+	prices[FuelType::EkoDiesel] = { Money{6}, Money{ 4 }};
+	prices[FuelType::Pb95] = { Money{3}, Money{1} };
+	prices[FuelType::Pb98] = { Money{4}, Money{1} };
+	prices[FuelType::N02] = { Money{10}, Money{6} };
 }
 
 void PetrolStation::AddEmployee(const Employee & emp)
@@ -100,17 +100,17 @@ int PetrolStation::GetEmployeeCount() const
 	return employeevec.size();
 }
 
-int PetrolStation::GetEmployeeSalary(int ID)
+Money PetrolStation::GetEmployeeSalary(int ID)
 {
 	int i = GetEmployeeIndex(ID);
 	if (i != -1)
 	{
 		return employeevec[i].GetSalary();
 	}
-	return -1;
+	return Money(-1);
 }
 
-int PetrolStation::SetEmployeeSalary(int ID, int amount)
+int PetrolStation::SetEmployeeSalary(int ID, Money amount)
 {
 	int i = GetEmployeeIndex(ID);
 	if (i != -1)
@@ -121,17 +121,17 @@ int PetrolStation::SetEmployeeSalary(int ID, int amount)
 	return -1;
 }
 
-int PetrolStation::GetEmployeeBonusSalary(int ID)
+Money PetrolStation::GetEmployeeBonusSalary(int ID)
 {
 	int i = GetEmployeeIndex(ID);
 	if (i != -1)
 	{
 		return employeevec[i].GetBonusSalary();
 	}
-	return -1;
+	return Money(-1);
 }
 
-int PetrolStation::SetEmployeeBonusSalary(int ID, int amount)
+int PetrolStation::SetEmployeeBonusSalary(int ID, Money amount)
 {
 	int i = GetEmployeeIndex(ID);
 	if (i != -1)
@@ -190,8 +190,8 @@ int PetrolStation::PayAllEmployees()
 {
 	for (size_t i = 0; i < employeevec.size(); i++)
 	{
-		int topay = employeevec[i].GetSalary() + employeevec[i].GetBonusSalary();
-		if ((balance - topay) < 0)
+		Money topay = employeevec[i].GetSalary() + employeevec[i].GetBonusSalary();
+		if ((balance - topay) < Money(0))
 		{
 			return -1;
 		}
@@ -244,7 +244,7 @@ int PetrolStation::GetMaximumTills() const
 	return tillList.GetTillCount();
 }
 
-void PetrolStation::AddTill(int ID, int maxCash, int currentCash)
+void PetrolStation::AddTill(int ID, Money maxCash, Money currentCash)
 {
 	int i = tillList.AddTill(ID, maxCash, currentCash);
 	balance -= currentCash;
@@ -323,7 +323,7 @@ Money PetrolStation::GetMoneyInTill(int ID)
 	Till* tillptr = tillList.FindTill(ID);
 	if (!tillptr)
 	{
-		return -2;
+		return Money(-2);
 	}
 	return tillptr->GetCurrentCash();
 }
@@ -377,7 +377,7 @@ int PetrolStation::AddFuel(FuelType fuelType, int amount)
 {
 	//check if we have enough money
 	auto moneyToSubstract = GetBuyCost(fuelType) * amount;
-	if (balance - moneyToSubstract < 0)
+	if (balance - moneyToSubstract < Money(0))
 	{
 		return - 1;
 	}

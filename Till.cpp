@@ -37,7 +37,7 @@ int Till::DepositCash(Money amount)
 
 int Till::DrawCash(Money amount)
 {
-	if (currentCash - amount >= 0)
+	if (currentCash - amount >= Money(0))
 	{
 		currentCash -= amount;
 		return 0;

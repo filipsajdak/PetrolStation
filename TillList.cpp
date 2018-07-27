@@ -64,7 +64,7 @@ int TillList::CloseAllTills()
 
 Money TillList::GetTotalMoneyInTills()
 {
-	Money money = 0;
+	Money money(0);
 	for (auto& till : tills)
 	{
 		money += till.second.GetCurrentCash();
