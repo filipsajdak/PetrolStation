@@ -16,12 +16,6 @@ Till::Till(const Till & oldTill)
 	
 }
 
-
-Till::~Till()
-{
-	DepositCash(currentCash);
-}
-
 int Till::DepositCash(Money amount)
 {
 	if (currentCash + amount <= maxCash)
@@ -76,14 +70,4 @@ void Till::Open()
 void Till::Close()
 {
 	isOpen = false;
-}
-
-void Till::SetNext(Till * ptr)
-{
-	next = ptr;
-}
-
-Till * Till::GetNext()
-{
-	return next;
 }

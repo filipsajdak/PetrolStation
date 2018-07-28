@@ -12,6 +12,7 @@ public:
 
 	//Simple getters and setters
 	Money GetSalary() const;
+	Money GetTotalSalary() const;
 	void SetSalary(Money amount);
 
 	int AddBalance(Money amount);

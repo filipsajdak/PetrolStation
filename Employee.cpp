@@ -15,6 +15,11 @@ Money Employee::GetSalary() const
 	return salary;
 }
 
+Money Employee::GetTotalSalary() const
+{
+	return salary + bonusSalary;
+}
+
 void Employee::SetSalary(Money amount)
 {
 	salary = amount;

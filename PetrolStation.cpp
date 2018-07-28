@@ -19,12 +19,13 @@ void PetrolStation::AddEmployee(const Employee & emp)
 
 int PetrolStation::RemoveEmployee(int ID)
 {
-	int i = GetEmployeeIndex(ID);
-	if (i == -1)
+	auto&& it = std::find_if(begin(employeevec), end(employeevec), [&](auto&& e)
 	{
-		return -1;
-	}
-	employeevec.erase(employeevec.begin() + i);
+		return e.GetID() == ID;
+	});
+	if (it == end(employeevec))
+		throw EmployeeNotFound();
+	employeevec.erase(it);
 	return 0;
 }
 
@@ -57,7 +58,6 @@ bool PetrolStation::isDepotWorking(int ID)
 std::string PetrolStation::GetDepotFuelType(int ID)
 {
 	int i = GetDepotIndex(ID);
-	std::string fuel;
 	if (i != -1)
 	{
 		return depotvec[i].GetFuelTypeString();
@@ -102,115 +102,79 @@ int PetrolStation::GetEmployeeCount() const
 
 Money PetrolStation::GetEmployeeSalary(int ID)
 {
-	int i = GetEmployeeIndex(ID);
-	if (i != -1)
-	{
-		return employeevec[i].GetSalary();
-	}
-	return Money(-1);
+	return GetEmployee(ID).GetSalary();
 }
 
 int PetrolStation::SetEmployeeSalary(int ID, Money amount)
 {
-	int i = GetEmployeeIndex(ID);
-	if (i != -1)
-	{
-		employeevec[i].SetSalary(amount);
-		return 0;
-	}
-	return -1;
+	GetEmployee(ID).SetSalary(amount);
+	return 0;
 }
 
 Money PetrolStation::GetEmployeeBonusSalary(int ID)
 {
-	int i = GetEmployeeIndex(ID);
-	if (i != -1)
-	{
-		return employeevec[i].GetBonusSalary();
-	}
-	return Money(-1);
+	return GetEmployee(ID).GetBonusSalary();
 }
 
 int PetrolStation::SetEmployeeBonusSalary(int ID, Money amount)
 {
-	int i = GetEmployeeIndex(ID);
-	if (i != -1)
-	{
-		employeevec[i].SetBonusSalary(amount);
-		return 0;
-	}
-	return -1;
+	GetEmployee(ID).SetBonusSalary(amount);
+	return 0;
 }
 
 std::string PetrolStation::GetEmployeeName(int ID)
 {
-	int i = GetEmployeeIndex(ID);
-	std::string name = "invalidID";
-	if (i != -1)
-	{
-		name = employeevec[i].GetName();
-		return name;
-	}
-	return name;
+	return GetEmployee(ID).GetName();
 }
 
 int PetrolStation::ChangeEmployeeName(int ID, std::string name)
 {
-	int i = GetEmployeeIndex(ID);
-	if (i != -1)
-	{
-		employeevec[i].ChangeName(name);
-		return 0;
-	}
-	return -1;
+	GetEmployee(ID).ChangeName(name);
+	return 0;;
 }
 
 int PetrolStation::GetEmployeeWorkingDaysCount(int ID)
 {
-	int i = GetEmployeeIndex(ID);
-	if (i != -1)
-	{
-		return employeevec[i].GetWorkingDaysCount();
-	}
-	return -1;
+	return GetEmployee(ID).GetWorkingDaysCount();
 }
 
 int PetrolStation::SetEmployeeWorkingDaysCount(int ID, int count)
 {
-	int i = GetEmployeeIndex(ID);
-	if (i != -1)
-	{
-		employeevec[i].SetWorkingDaysCount(count);
-		return 0;
-	}
-	return -1;
+	GetEmployee(ID).SetWorkingDaysCount(count);
+	return 0;
 }
 
 int PetrolStation::PayAllEmployees()
 {
-	for (size_t i = 0; i < employeevec.size(); i++)
+	for (auto&& e: employeevec)
 	{
-		Money topay = employeevec[i].GetSalary() + employeevec[i].GetBonusSalary();
-		if ((balance - topay) < Money(0))
-		{
-			return -1;
-		}
-		balance -= topay;
-		employeevec[i].AddBalance(topay);
+		auto topay = e.GetTotalSalary();
+		PayEmployee(topay, e);
 	}
 	return 0;
 }
 
-int PetrolStation::GetEmployeeIndex(int ID)
+void PetrolStation::PayEmployee(const Money &topay, Employee & e)
 {
-	for(size_t i = 0; i < employeevec.size(); i++)
+	if (balance < topay)
 	{
-		if (employeevec[i].GetID() == ID)
-		{
-			return i;
-		}
+		throw NotEnoughMoney();
 	}
-	return -1;
+	balance -= topay;
+	e.AddBalance(topay);
+}
+
+Employee& PetrolStation::GetEmployee(int ID)
+{
+	auto&& it = std::find_if(begin(employeevec), end(employeevec),[&](auto&& e)
+	{
+		return e.GetID() == ID;
+	});
+	if (it == end(employeevec))
+	{
+		throw EmployeeNotFound();
+	}
+	return *it;
 }
 
 int PetrolStation::GetDepotIndex(int ID)
@@ -377,7 +341,7 @@ int PetrolStation::AddFuel(FuelType fuelType, int amount)
 {
 	//check if we have enough money
 	auto moneyToSubstract = GetBuyCost(fuelType) * amount;
-	if (balance - moneyToSubstract < Money(0))
+	if (balance < moneyToSubstract)
 	{
 		return - 1;
 	}

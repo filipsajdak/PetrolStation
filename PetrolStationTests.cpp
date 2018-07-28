@@ -18,12 +18,12 @@ TEST(PetrolStationTests, empty_case) {
 	EXPECT_THAT(p.GetMoneyInTill(234), Money(-2));
 	EXPECT_THAT(p.RemoveTill(13), -1);
 	EXPECT_THAT(p.GetEmployeeCount(), 0);
-	EXPECT_THAT(p.GetEmployeeName(1), "invalidID");
-	EXPECT_THAT(p.GetEmployeeBonusSalary(2), Money(-1));
-	EXPECT_THAT(p.GetEmployeeSalary(100), Money(-1));
+	EXPECT_THROW(p.GetEmployeeName(1), EmployeeNotFound);
+	EXPECT_THROW(p.GetEmployeeBonusSalary(2), EmployeeNotFound);
+	EXPECT_THROW(p.GetEmployeeSalary(100), EmployeeNotFound);
 	EXPECT_THAT(p.GetDepotFuelType(2), "NoDepot");
-	EXPECT_THAT(p.GetEmployeeWorkingDaysCount(234), -1);
-	EXPECT_THAT(p.ChangeEmployeeName(2, "Bob"), -1);
+	EXPECT_THROW(p.GetEmployeeWorkingDaysCount(234), EmployeeNotFound);
+	EXPECT_THROW(p.ChangeEmployeeName(2, "Bob"), EmployeeNotFound);
 }
 
 struct PetrolStationFixtureTests : ::testing::Test {
@@ -45,7 +45,7 @@ TEST_F(PetrolStationFixtureTests, adding_and_removing_employees) {
 }
 
 TEST_F(PetrolStationFixtureTests, removing_non_existing_employee) {
-	EXPECT_THAT(p.RemoveEmployee(4), -1);
+	EXPECT_THROW(p.RemoveEmployee(4), EmployeeNotFound);
 }
 
 TEST_F(PetrolStationFixtureTests, change_employee_parameters) {

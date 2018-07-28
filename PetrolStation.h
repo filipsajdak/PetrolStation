@@ -6,6 +6,8 @@
 #include <map>
 #include "Money.h"
 
+struct EmployeeNotFound {};
+struct NotEnoughMoney {};
 class PetrolStation
 {
 public:
@@ -27,6 +29,8 @@ public:
 	int SetEmployeeWorkingDaysCount(int ID, int count);
 	//Pays employee his monthly salary + bonussalary
 	int PayAllEmployees();
+
+	void PayEmployee(const Money & topay, Employee & e);
 
 	//These functions are responsible for adding and removing Depots from the depotMap, similarly as with employees they can be constructed in two distinct ways
 	void AddDepot(int ID, int maxAmount, FuelType fuelType);
@@ -98,7 +102,7 @@ private:
 	Money balance{10000}; //they start with some balance
 	std::map<FuelType, FuelPrices> prices;
 	//Returns index of given employee in the vector or returns -1 to indicate there is no such employee
-	int GetEmployeeIndex(int ID);
+	Employee& GetEmployee(int ID);
 	int GetDepotIndex(int ID);
 
 	auto FindDepotWithEnoughFuel(int amount, FuelType type);
