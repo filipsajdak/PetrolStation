@@ -28,7 +28,7 @@ public:
 	PetrolStation build() {
 		PetrolStation p(std::move(name), std::move(ID));
 		for (auto&& e : employees) p.AddEmployee(std::move(e));
-		for (auto&& d : depots) p.AddDepot(d.GetID(), d.GetMaxFuelAmount(), d.GetFuelType());
+		for (auto&& d : depots) p.AddDepot(std::move(d));
 		for (auto&& t : tills) p.AddTill(std::move(t));
 		return p;
 	}

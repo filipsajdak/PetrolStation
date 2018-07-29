@@ -38,7 +38,7 @@ public:
 	void PayEmployee(const Money & topay, Employee & e);
 
 	//These functions are responsible for adding and removing Depots from the depotMap, similarly as with employees they can be constructed in two distinct ways
-	void AddDepot(int ID, int maxAmount, FuelType fuelType);
+	void AddDepot(Depot depot);
 	//Removes a depot from depotMap by its ID
 	int removeDepot(int ID);
 	bool isDepotWorking(int ID);
