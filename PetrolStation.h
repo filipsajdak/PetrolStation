@@ -61,7 +61,7 @@ public:
 	//Returns total amount of tills assigned to this station (both open and closed)
 	int GetMaximumTills() const;
 
-	void AddTill(const Till& till);
+	void AddTill(Till till);
 	int RemoveTill(int ID);
 
 	//These functions are called to open/close or checkout a till of particular ID

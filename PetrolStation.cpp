@@ -1,19 +1,8 @@
 #include "PetrolStation.h"
 #include <algorithm>
+#include "FindIf.h"
 
 namespace {
-	template <typename Container, typename Fun>
-	auto find_if(Container&& c, Fun&& fun) {
-		return std::find_if(std::begin(std::forward<Container>(c)), 
-			std::end(std::forward<Container>(c)), 
-			std::forward<Fun>(fun));
-	}
-
-	auto WithID = [](auto ID) {
-		return [ID](auto&& e) {
-			return e.GetID() == ID;
-		};
-	};
 
 	const std::map<FuelType, PetrolStation::FuelPrices>::value_type fuel_prices[] = {
 		{ FuelType::Diesel		, { Money{  4 }, Money{ 2 } }},
@@ -197,9 +186,9 @@ int PetrolStation::GetMaximumTills() const
 	return tillList.GetTillCount();
 }
 
-void PetrolStation::AddTill(const Till& till)
+void PetrolStation::AddTill(Till till)
 {
-	auto i = tillList.AddTill(till);
+	auto i = tillList.AddTill(std::move(till));
 	if (i == 0)
 	{
 		balance -= till.GetCurrentCash();
@@ -210,19 +199,13 @@ void PetrolStation::AddTill(const Till& till)
 
 int PetrolStation::RemoveTill(int ID)
 {
-	Till* till = tillList.FindTill(ID);
-	if (!till)
-	{
-		return -1;
-	}
-	auto currmoney = till->GetCurrentCash();
-	int i = tillList.RemoveTill(ID);
-	if (i == 0)
-	{
-		balance += currmoney;
-		currentOpenTillsCount--;
-	}
-	return i;
+	auto& till = tillList.GetTill(ID);
+
+	auto currmoney = till.GetCurrentCash();
+	tillList.RemoveTill(ID);
+	balance += currmoney;
+	currentOpenTillsCount--;
+	return 0;
 }
 
 int PetrolStation::OpenTill(int ID)
@@ -252,13 +235,9 @@ int PetrolStation::CloseTill(int ID)
 
 int PetrolStation::CheckoutTill(int ID)
 {
-	Till* tillptr = tillList.FindTill(ID);
-	if (!tillptr)
-	{
-		return -2;
-	}
-	auto toSubstract = tillptr->GetCurrentCash();
-	if (tillptr->DrawCash(toSubstract) != 0)
+	auto& tillptr = tillList.GetTill(ID);
+	auto toSubstract = tillptr.GetCurrentCash();
+	if (tillptr.DrawCash(toSubstract) != 0)
 	{
 		return -1;
 	}
@@ -268,12 +247,7 @@ int PetrolStation::CheckoutTill(int ID)
 
 Money PetrolStation::GetMoneyInTill(int ID)
 {
-	Till* tillptr = tillList.FindTill(ID);
-	if (!tillptr)
-	{
-		return Money(-2);
-	}
-	return tillptr->GetCurrentCash();
+	return tillList.GetTill(ID).GetCurrentCash();
 }
 
 int PetrolStation::CheckoutAllTills()
@@ -307,13 +281,9 @@ int PetrolStation::SellFuel(int amount, FuelType type)
 	depot.DeFuel(amount);
 
 	//search for a free Till;
-	auto openTill = tillList.FindFirstOpenTill();
-	if (!openTill)
-	{
-		return -2;
-	}
+	auto& openTill = tillList.GetFirstOpenTill();
 	//add cash to till
-	if (openTill->DepositCash(amount * GetSellCost(type)) != 0)
+	if (openTill.DepositCash(amount * GetSellCost(type)) != 0)
 	{
 		return -4;
 	}

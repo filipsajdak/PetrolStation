@@ -16,12 +16,12 @@ TEST(PetrolStationTests, empty_case) {
 	PetrolStation p("Octan2", 2);
 
 	EXPECT_THAT(p.GetBalance(), Money(10000));
-	EXPECT_THAT(p.CloseTill(2), -1);
-	EXPECT_THAT(p.CheckoutTill(23), -2);
+	EXPECT_THROW(p.CloseTill(2), TillNotFound);
+	EXPECT_THROW(p.CheckoutTill(23), TillNotFound);
 	EXPECT_THAT(p.GetCurrentOpenTillsCount(), 0);
 	EXPECT_THAT(p.GetMaximumTills(), 0);
-	EXPECT_THAT(p.GetMoneyInTill(234), Money(-2));
-	EXPECT_THAT(p.RemoveTill(13), -1);
+	EXPECT_THROW(p.GetMoneyInTill(234), TillNotFound);
+	EXPECT_THROW(p.RemoveTill(13), TillNotFound);
 	EXPECT_THAT(p.GetEmployeeCount(), 0);
 	EXPECT_THROW(p.GetEmployeeName(1), EmployeeNotFound);
 	EXPECT_THROW(p.GetEmployeeBonusSalary(2), EmployeeNotFound);
@@ -128,7 +128,7 @@ TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, adding_tills_removing_tills)
 	auto p = builder.build();
 
 	EXPECT_THAT(p.RemoveTill(2), 0);
-	EXPECT_THAT(p.RemoveTill(0), -1);
+	EXPECT_THROW(p.RemoveTill(0), TillNotFound);
 }
 
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, getting_data_from_petrolstation) {
@@ -157,8 +157,8 @@ TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, getting_data_about_depots_wi
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, emptying_empty_tills) {
 	auto p = builder.build();
 
-	EXPECT_THAT(p.CheckoutTill(0),-2);
-	EXPECT_THAT(p.CheckoutTill(100), -2);
+	EXPECT_THROW(p.CheckoutTill(0), TillNotFound);
+	EXPECT_THROW(p.CheckoutTill(100), TillNotFound);
 }
 
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, unsuccessful_cash_operations) {
