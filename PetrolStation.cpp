@@ -1,6 +1,21 @@
 #include "PetrolStation.h"
 #include <algorithm>
 
+namespace {
+	template <typename Container, typename Fun>
+	auto find_if(Container&& c, Fun&& fun) {
+		return std::find_if(std::begin(std::forward<Container>(c)), 
+			std::end(std::forward<Container>(c)), 
+			std::forward<Fun>(fun));
+	}
+
+	auto WithID = [](auto ID) {
+		return [ID](auto&& e) {
+			return e.GetID() == ID;
+		};
+	};
+}
+
 PetrolStation::PetrolStation(std::string name, int ID) : ID(ID), name(name), currentOpenTillsCount(0)
 {
 	prices[FuelType::Diesel] = { Money{4}, Money{2} };
@@ -16,16 +31,18 @@ void PetrolStation::AddEmployee(Employee emp)
 	employeevec.emplace_back(std::move(emp));
 }
 
+auto PetrolStation::FindEmployee(int ID) {
+	auto&& it = find_if(employeevec, WithID(ID));
+
+	if (it == end(employeevec))
+		throw EmployeeNotFound();
+	
+	return it;
+}
 
 int PetrolStation::RemoveEmployee(int ID)
 {
-	auto&& it = std::find_if(begin(employeevec), end(employeevec), [&](auto&& e)
-	{
-		return e.GetID() == ID;
-	});
-	if (it == end(employeevec))
-		throw EmployeeNotFound();
-	employeevec.erase(it);
+	employeevec.erase(FindEmployee(ID));
 	return 0;
 }
 
@@ -166,32 +183,18 @@ void PetrolStation::PayEmployee(const Money &topay, Employee & e)
 
 Employee& PetrolStation::GetEmployee(int ID)
 {
-	auto&& it = std::find_if(begin(employeevec), end(employeevec),[&](auto&& e)
-	{
-		return e.GetID() == ID;
-	});
-	if (it == end(employeevec))
-	{
-		throw EmployeeNotFound();
-	}
-	return *it;
+	return *FindEmployee(ID);
 }
 
 int PetrolStation::GetDepotIndex(int ID)
 {
-	for (size_t i = 0; i < depotvec.size(); i++)
-	{
-		if (depotvec[i].GetID() == ID)
-		{
-			return i;
-		}
-	}
-	return -1;
+	auto it = find_if(depotvec, WithID(ID));
+	return it == depotvec.end() ? -1 : std::distance(depotvec.begin(), it);
 }
 
 inline auto PetrolStation::FindDepotWithEnoughFuel(int amount, FuelType type)
 {
-	return std::find_if(std::begin(depotvec), std::end(depotvec),
+	return find_if(depotvec,
 		[=](auto const& depot)
 	{
 		return depot.GetFuelType() == type && depot.GetCurrentFuelAmount() >= amount;
@@ -340,11 +343,13 @@ int PetrolStation::AddFuel(FuelType fuelType, int amount)
 	{
 		return - 1;
 	}
+
 	for (auto& depot : depotvec)
 	{
 		//add fuel
-		if (depot.GetFuelType() == fuelType && depot.ReFuel(amount) == 0)
+		if (depot.GetFuelType() == fuelType && amount <= depot.GetAvailableVolume())
 		{
+			depot.ReFuel(amount);
 			balance -= moneyToSubstract;
 			return 0;
 		}
@@ -356,7 +361,7 @@ int PetrolStation::RefuellAll()
 {
 	for (auto& depot : depotvec)
 	{
-		int tofuel = depot.GetMaxFuelAmount() - depot.GetCurrentFuelAmount();
+		int tofuel = depot.GetAvailableVolume();
 		auto moneyToSubstract = GetBuyCost(depot.GetFuelType()) * tofuel;
 		if (depot.ReFuel(tofuel) != 0)
 		{

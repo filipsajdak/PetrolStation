@@ -26,6 +26,7 @@ public:
 	//Depots cannot be overfueled or underfueled thus we can return different integer value to differ between these two states (for now 1 is overfuel -1 is underfuel)
 	int ReFuel(int amount);
 	int DeFuel(int amount);
+	int GetAvailableVolume() const;
 
 	//These methods are responsible for repairing and breaking the depot 
 	//they are used to simulate real life events that can cause the depot to malfunction

@@ -109,6 +109,7 @@ private:
 	int GetDepotIndex(int ID);
 
 	auto FindDepotWithEnoughFuel(int amount, FuelType type);
+	auto FindEmployee(int ID);
 
 	
 

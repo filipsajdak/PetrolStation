@@ -31,6 +31,11 @@ int Depot::DeFuel(int amount)
 	}
 }
 
+int Depot::GetAvailableVolume() const
+{
+	return maxFuelAmount - currentFuelAmount;
+}
+
 void Depot::Repair()
 {
 	isWorking = true;
