@@ -60,8 +60,6 @@ public:
 	//Returns total amount of tills assigned to this station (both open and closed)
 	int GetMaximumTills() const;
 
-	//These methods are responsible for managing(adding and removing tills from the TillList)
-	void AddTill(int ID, Money maxCash, Money currentCash);
 	void AddTill(const Till& till);
 	int RemoveTill(int ID);
 

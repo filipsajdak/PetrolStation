@@ -208,11 +208,6 @@ int PetrolStation::GetMaximumTills() const
 	return tillList.GetTillCount();
 }
 
-void PetrolStation::AddTill(int ID, Money maxCash, Money currentCash)
-{
-	AddTill({ ID, maxCash, currentCash });
-}
-
 void PetrolStation::AddTill(const Till& till)
 {
 	auto i = tillList.AddTill(till);
