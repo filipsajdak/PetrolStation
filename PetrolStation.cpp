@@ -18,7 +18,6 @@ namespace {
 PetrolStation::PetrolStation(std::string name, int ID) 
 	: ID(ID)
 	, name(name)
-	, currentOpenTillsCount(0)
 	, prices(std::begin(fuel_prices), std::end(fuel_prices))
 {
 }
@@ -178,7 +177,7 @@ inline auto PetrolStation::FindDepotWithEnoughFuel(int amount, FuelType type)
 
 int PetrolStation::GetCurrentOpenTillsCount() const
 {
-	return currentOpenTillsCount;
+	return tillList.GetCurrentOpenTillsCount();
 }
 
 int PetrolStation::GetMaximumTills() const
@@ -192,7 +191,6 @@ void PetrolStation::AddTill(Till till)
 	if (i == 0)
 	{
 		balance -= till.GetCurrentCash();
-		currentOpenTillsCount++;
 	}
 
 }
@@ -204,32 +202,19 @@ int PetrolStation::RemoveTill(int ID)
 	auto currmoney = till.GetCurrentCash();
 	tillList.RemoveTill(ID);
 	balance += currmoney;
-	currentOpenTillsCount--;
 	return 0;
 }
 
 int PetrolStation::OpenTill(int ID)
 {
-	int i = tillList.OpenTill(ID);
-	if (i == 0)
-	{
-		currentOpenTillsCount++;
-	}
-	return i;
+	tillList.OpenTill(ID);
+	return 0;
 }
 
 int PetrolStation::CloseTill(int ID)
 {
 	CheckoutTill(ID);
-	if (tillList.CloseTill(ID) != 0)
-	{
-		return -1;
-	}
-	else
-	{
-		currentOpenTillsCount--;
-	}
-	
+	tillList.CloseTill(ID);
 	return 0;
 }
 

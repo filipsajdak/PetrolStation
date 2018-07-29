@@ -21,6 +21,11 @@ int Till::DepositCash(Money amount)
 	}
 }
 
+void Till::Checkout()
+{
+	DrawCash(GetCurrentCash());
+}
+
 int Till::DrawCash(Money amount)
 {
 	if (currentCash - amount >= Money(0))

@@ -1,12 +1,7 @@
 #include "TillList.h"
 #include <algorithm>
+#include <numeric>
 #include "FindIf.h"
-
-Till * TillList::FindTill(int ID)
-{
-	auto it = tills.find(ID);
-	return it != tills.end() ? &it->second : nullptr;
-}
 
 Till& TillList::GetFirstOpenTill()
 {
@@ -40,7 +35,7 @@ int TillList::CheckoutAllTills()
 {
 	for (auto& till : tills)
 	{
-		till.second.DrawCash(till.second.GetCurrentCash());
+		till.second.Checkout();
 	}
 	return 0;
 }
@@ -56,12 +51,9 @@ int TillList::CloseAllTills()
 
 Money TillList::GetTotalMoneyInTills()
 {
-	Money money(0);
-	for (auto& till : tills)
-	{
-		money += till.second.GetCurrentCash();
-	}
-	return money;
+	return std::accumulate(tills.begin(), tills.end(), Money(0), [](auto&& m, auto&& t) {
+		return m + t.second.GetCurrentCash();
+	});
 }
 
 int TillList::AddTill(Till till)
@@ -70,27 +62,11 @@ int TillList::AddTill(Till till)
 	return it.second ? 0 : -1;
 }
 
-int TillList::AddTill(int ID, Money maxCash, Money currentCash)
-{
-	return AddTill({ID, maxCash, currentCash});
-}
-
-int TillList::RemoveTill(Till * till)
-{
-	int statusCode = RemoveTill(till->GetID());
-	return statusCode;
-}
-
 int TillList::RemoveTill(int ID)
 {
 	if (tills.erase(ID) == 0)
 		throw TillNotFound();
 	return 0;
-}
-
-void TillList::RemoveAllElements() 
-{
-	tills.clear();
 }
 
 int TillList::GetTillCount() const
@@ -103,4 +79,11 @@ Till & TillList::GetTill(int ID)
 	auto it = tills.find(ID);
 	if (it == tills.end()) throw TillNotFound();
 	return it->second;
+}
+
+int TillList::GetCurrentOpenTillsCount() const
+{
+	return std::count_if(tills.begin(), tills.end(), [](auto&& t) {
+		return t.second.IsOpen();
+	});
 }

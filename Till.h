@@ -15,6 +15,7 @@ public:
 	//These functions are responsible for managing the cash in this instance of till, they return special integer value to tell us which type of error we are facing (if any)
 	//Tills cannot be cashed out below their current cash amount or overfilled with cash thus we can return different integer value to differ between these two states (for now 1 is overcash -1 is undercash)
 	int DepositCash(Money amount);
+	void Checkout();
 	int DrawCash(Money amount);
 	//Returns current cash amount in the particular Till
 	Money GetCurrentCash()const;

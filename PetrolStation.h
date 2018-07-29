@@ -102,7 +102,6 @@ private:
 	std::vector<Employee> employeevec;
 	std::vector<Depot> depotvec;
 	TillList tillList;
-	int currentOpenTillsCount;
 	Money balance{10000}; //they start with some balance
 	std::map<FuelType, FuelPrices> prices;
 	//Returns index of given employee in the vector or returns -1 to indicate there is no such employee
