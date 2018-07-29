@@ -26,7 +26,7 @@ TEST(PetrolStationTests, empty_case) {
 	EXPECT_THROW(p.GetEmployeeName(1), EmployeeNotFound);
 	EXPECT_THROW(p.GetEmployeeBonusSalary(2), EmployeeNotFound);
 	EXPECT_THROW(p.GetEmployeeSalary(100), EmployeeNotFound);
-	EXPECT_THAT(p.GetDepotFuelType(2), "NoDepot");
+	EXPECT_THROW(p.GetDepotFuelType(2), DepotNotFound);
 	EXPECT_THROW(p.GetEmployeeWorkingDaysCount(234), EmployeeNotFound);
 	EXPECT_THROW(p.ChangeEmployeeName(2, "Bob"), EmployeeNotFound);
 }
@@ -95,7 +95,7 @@ TEST_F(PetrolStationWithDepotsFixtureTests, adding_and_removing_depots) {
 
 	EXPECT_THAT(p.removeDepot(3), 0);
 
-	EXPECT_THAT(p.isDepotWorking(3), false);
+	EXPECT_THROW(p.isDepotWorking(3), DepotNotFound);
 }
 
 TEST_F(PetrolStationWithDepotsFixtureTests, balance_after_adding_fuel) {

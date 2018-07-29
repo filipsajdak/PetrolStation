@@ -7,6 +7,7 @@
 #include "Money.h"
 
 struct EmployeeNotFound {};
+struct DepotNotFound {};
 struct NotEnoughMoney {};
 class PetrolStation
 {
@@ -106,7 +107,7 @@ private:
 	std::map<FuelType, FuelPrices> prices;
 	//Returns index of given employee in the vector or returns -1 to indicate there is no such employee
 	Employee& GetEmployee(int ID);
-	int GetDepotIndex(int ID);
+	Depot& GetDepot(int ID);
 
 	auto FindDepotWithEnoughFuel(int amount, FuelType type);
 	auto FindEmployee(int ID);

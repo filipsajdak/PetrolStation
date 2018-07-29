@@ -61,53 +61,30 @@ void PetrolStation::AddDepot(Depot depot)
 
 int PetrolStation::removeDepot(int ID)
 {
-	int i = GetDepotIndex(ID);
-	if (i != -1)
-	{
-		depotvec.erase(depotvec.begin() + i);
-		return 0;
-	}
-	return -1;
+	auto it = find_if(depotvec, WithID(ID));
+	if (it == depotvec.end()) return -1;
+	depotvec.erase(it);
+	return 0;
 }
 
 bool PetrolStation::isDepotWorking(int ID)
 {
-	int i = GetDepotIndex(ID);
-	if (i != -1)
-	{
-		return depotvec[i].IsWorking();
-	}
-	return false;
+	return GetDepot(ID).IsWorking();
 }
 
 std::string PetrolStation::GetDepotFuelType(int ID)
 {
-	int i = GetDepotIndex(ID);
-	if (i != -1)
-	{
-		return depotvec[i].GetFuelTypeString();
-	}
-	return "NoDepot";
+	return GetDepot(ID).GetFuelTypeString();
 }
 
 int PetrolStation::GetDepotMaxFuelAmount(int ID) 
 {
-	int i = GetDepotIndex(ID);
-	if (i != -1)
-	{
-		return depotvec[i].GetMaxFuelAmount();
-	}
-	return -1;
+	return GetDepot(ID).GetMaxFuelAmount();
 }
 
 int PetrolStation::GetDepotCurrentFuelAmount(int ID)
 {
-	int i = GetDepotIndex(ID);
-	if (i != -1)
-	{
-		return depotvec[i].GetCurrentFuelAmount();
-	}
-	return -1;
+	return GetDepot(ID).GetCurrentFuelAmount();
 }
 
 std::string PetrolStation::GetName() const
@@ -194,10 +171,11 @@ Employee& PetrolStation::GetEmployee(int ID)
 	return *FindEmployee(ID);
 }
 
-int PetrolStation::GetDepotIndex(int ID)
+Depot& PetrolStation::GetDepot(int ID)
 {
 	auto it = find_if(depotvec, WithID(ID));
-	return it == depotvec.end() ? -1 : std::distance(depotvec.begin(), it);
+	if (it == depotvec.end()) throw DepotNotFound();
+	return *it;
 }
 
 inline auto PetrolStation::FindDepotWithEnoughFuel(int amount, FuelType type)
