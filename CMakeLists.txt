@@ -23,4 +23,3 @@ add_executable(${PROJECT_NAME}
 if (${UNIX})
 	target_link_libraries(${PROJECT_NAME} pthread)
 endif (${UNIX})
-

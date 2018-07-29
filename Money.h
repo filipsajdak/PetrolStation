@@ -37,6 +37,8 @@ public:
 	constexpr bool operator>=(Money m) const noexcept { return value >= m.value; }
 	constexpr bool operator>(Money m)  const noexcept { return value > m.value; }
 
+	int GetValue() const { return value; }
+
 private:
 	int value;
 };

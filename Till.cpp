@@ -8,14 +8,6 @@ Till::Till(int ID, Money maxCash, Money currentCash)
 
 }
 
-Till::Till(const Till & oldTill) 
-	: ID(oldTill.ID)
-	, maxCash(oldTill.maxCash)
-	, currentCash(oldTill.currentCash)
-{
-	
-}
-
 int Till::DepositCash(Money amount)
 {
 	if (currentCash + amount <= maxCash)

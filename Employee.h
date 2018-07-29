@@ -5,9 +5,11 @@
 class Employee
 {
 public:
-	//Constructor and destructor
 	Employee(std::string name, Money salary, Money bonusSalary, int workingDaysCount, int ID);
-	Employee(const Employee& empl) = default;
+	Employee(const Employee&) = delete;
+	Employee& operator=(const Employee&) = delete;
+	Employee(Employee&&) = default;
+	Employee& operator=(Employee&&) = default;
 	~Employee() = default;
 
 	//Simple getters and setters

@@ -18,7 +18,7 @@ public:
 	Depot(int ID, int maxAmount, FuelType fuelType);
 	Depot(const Depot& oldDepot) = delete;
 	Depot& operator=(const Depot&) = delete;
-	Depot(Depot&& oldDepot) noexcept = default;
+	Depot(Depot&&) noexcept = default;
 	Depot& operator=(Depot&&) noexcept = default;
 
 

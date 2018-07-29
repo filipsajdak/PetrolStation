@@ -4,6 +4,12 @@
 class TillList
 {
 public:
+	TillList() = default;
+	TillList(const TillList&) = delete;
+	TillList& operator=(const TillList&) = delete;
+	TillList(TillList&&) = default;
+	TillList& operator=(TillList&&) = default;
+
 	//Returns pointer to the Till of particular ID
 	Till* FindTill(int ID);
 	//Returns a pointer to a first open till
@@ -30,7 +36,6 @@ public:
 
 	//These functions are for making the assignment operator more simple
 	void RemoveAllElements();
-	void CopyAllElements(const TillList& othertill);
 
 	//Returns the total amount of Tills associated with this list
 	int GetTillCount()const;

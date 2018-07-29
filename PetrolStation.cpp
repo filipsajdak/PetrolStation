@@ -11,9 +11,9 @@ PetrolStation::PetrolStation(std::string name, int ID) : ID(ID), name(name), cur
 	prices[FuelType::N02] = { Money{10}, Money{6} };
 }
 
-void PetrolStation::AddEmployee(const Employee & emp)
+void PetrolStation::AddEmployee(Employee emp)
 {
-	employeevec.push_back(emp);
+	employeevec.emplace_back(std::move(emp));
 }
 
 
@@ -210,18 +210,18 @@ int PetrolStation::GetMaximumTills() const
 
 void PetrolStation::AddTill(int ID, Money maxCash, Money currentCash)
 {
-	int i = tillList.AddTill(ID, maxCash, currentCash);
-	balance -= currentCash;
-	if (i == 0)
-	{
-		currentOpenTillsCount++;
-	}
-	
+	AddTill({ ID, maxCash, currentCash });
 }
 
 void PetrolStation::AddTill(const Till& till)
 {
-	tillList.AddTill(till);
+	auto i = tillList.AddTill(till);
+	if (i == 0)
+	{
+		balance -= till.GetCurrentCash();
+		currentOpenTillsCount++;
+	}
+
 }
 
 int PetrolStation::RemoveTill(int ID)

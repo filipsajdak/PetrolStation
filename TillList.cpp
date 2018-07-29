@@ -79,7 +79,7 @@ int TillList::AddTill(const Till & till)
 
 int TillList::AddTill(int ID, Money maxCash, Money currentCash)
 {
-	auto it = tills.insert(std::make_pair(ID, Till(ID, maxCash, currentCash)));
+	auto it = tills.emplace(std::make_pair(ID, Till(ID, maxCash, currentCash)));
 	return it.second ? 0 : -1;
 }
 
@@ -97,11 +97,6 @@ int TillList::RemoveTill(int ID)
 void TillList::RemoveAllElements() 
 {
 	tills.clear();
-}
-
-void TillList::CopyAllElements(const TillList & othertill)
-{
-	tills = othertill.tills;
 }
 
 int TillList::GetTillCount() const

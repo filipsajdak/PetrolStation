@@ -12,7 +12,12 @@ class PetrolStation
 {
 public:
 	PetrolStation(std::string name, int ID);
-	void AddEmployee(const Employee& emp);
+	PetrolStation(const PetrolStation&) = delete;
+	PetrolStation& operator=(const PetrolStation&) = delete;
+	PetrolStation(PetrolStation&&) = default;
+	PetrolStation& operator=(PetrolStation&&) = default;
+
+	void AddEmployee(Employee emp);
 	//Removing is performed by ID only, the corresponding employee is looked up in the employeevec and then removed
 	int RemoveEmployee(int ID);
 	//Returns the current amount of employees assigned to this particular station

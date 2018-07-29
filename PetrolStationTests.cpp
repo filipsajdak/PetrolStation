@@ -3,9 +3,14 @@
 #include <sstream>
 #include "PetrolStation.h"
 #include "Money.h"
+#include "PetrolStationBuilder.h"
+
+inline void PrintTo(const Money& m, ::std::ostream *os)
+{
+	*os << m.GetValue();
+}
 
 using namespace std;
-
 
 TEST(PetrolStationTests, empty_case) {
 	PetrolStation p("Octan2", 2);
@@ -28,27 +33,38 @@ TEST(PetrolStationTests, empty_case) {
 
 struct PetrolStationFixtureTests : ::testing::Test {
 
-	PetrolStation p{ "Benzin1", 1 };
+	PetrolStationBuilder builder;
+
+	PetrolStationFixtureTests() 
+		: builder{ "Benzin1", 1 }
+	{
+	}
 
 	void SetUp() override {
-		p.AddEmployee({ "John", Money(100), Money(200), 3, 1 });
-		p.AddEmployee({ "Barbara", Money(200), Money(300), 4, 2 });
-		p.AddEmployee({ "Tadeus", Money(130), Money(560), 4, 3 });
+		builder.add(Employee{ "John", Money(100), Money(200), 3, 1 },
+			Employee{ "Barbara", Money(200), Money(300), 4, 2 },
+			Employee{ "Tadeus", Money(130), Money(560), 4, 3 });
 	}
 
 };
 
 TEST_F(PetrolStationFixtureTests, adding_and_removing_employees) {
+	auto p = builder.build();
+
 	EXPECT_THAT(p.GetEmployeeCount(), 3);
 	EXPECT_THAT(p.RemoveEmployee(1), 0);
 	EXPECT_THAT(p.GetEmployeeCount(), 2);
 }
 
 TEST_F(PetrolStationFixtureTests, removing_non_existing_employee) {
+	auto p = builder.build();
+
 	EXPECT_THROW(p.RemoveEmployee(4), EmployeeNotFound);
 }
 
 TEST_F(PetrolStationFixtureTests, change_employee_parameters) {
+	auto p = builder.build();
+
 	EXPECT_THAT(p.GetEmployeeName(2), "Barbara");
 	EXPECT_THAT(p.ChangeEmployeeName(2, "Stepan"), 0);
 	EXPECT_THAT(p.GetEmployeeName(2), "Stepan");
@@ -64,18 +80,18 @@ TEST_F(PetrolStationFixtureTests, change_employee_parameters) {
 struct PetrolStationWithDepotsFixtureTests : PetrolStationFixtureTests {
 	void SetUp() override {
 		PetrolStationFixtureTests::SetUp();
-		p.AddDepot(1, 300, FuelType::Diesel);
-		p.AddDepot(2, 400, FuelType::EkoDiesel);
-		//		p.AddDepot(3, 400, FuelType::Pb95);
-		p.AddDepot(4, 300, FuelType::Pb98);
-		p.AddDepot(5, 500, FuelType::TurboDiesel);
-		p.AddDepot(6, 100, FuelType::N02);
+
+		builder.add(Depot(1, 300, FuelType::Diesel),
+					Depot(2, 400, FuelType::EkoDiesel),
+					Depot(4, 300, FuelType::Pb98),
+					Depot(5, 500, FuelType::TurboDiesel),
+					Depot(6, 100, FuelType::N02));
 	}
 };
 
 
 TEST_F(PetrolStationWithDepotsFixtureTests, adding_and_removing_depots) {
-	p.AddDepot(3, 400, FuelType::Pb95);
+	auto p = builder.add(Depot(3, 400, FuelType::Pb95)).build();
 
 	EXPECT_THAT(p.removeDepot(3), 0);
 
@@ -83,6 +99,8 @@ TEST_F(PetrolStationWithDepotsFixtureTests, adding_and_removing_depots) {
 }
 
 TEST_F(PetrolStationWithDepotsFixtureTests, balance_after_adding_fuel) {
+	auto p = builder.build();
+
 	EXPECT_THAT(p.AddFuel(FuelType::Diesel, 300), 0); //DIESEL = 300
 	EXPECT_THAT(p.AddFuel(FuelType::EkoDiesel, 400), 0); //EKODIESEL = 400
 	
@@ -97,21 +115,25 @@ struct PetrolStationWithDepotsAndTillsFixtureTests : PetrolStationWithDepotsFixt
 	void SetUp() override {
 		PetrolStationWithDepotsFixtureTests::SetUp();
 
-		p.AddTill(1, Money{ 10000 }, Money{ 500 });
-		p.AddTill(2, Money{ 3000 }, Money{ 500 });
-		p.AddTill(4, Money{ 2000 }, Money{ 0 });
-		p.AddTill(3, Money{ 10000 }, Money{ 2000 });
+		builder.add(
+			Till(1, Money{ 10000 }, Money{ 500 }),
+			Till(2, Money{ 3000 }, Money{ 500 }),
+			Till(4, Money{ 2000 }, Money{ 0 }),
+			Till(3, Money{ 10000 }, Money{ 2000 })
+		);
 	}
 };
 
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, adding_tills_removing_tills) {
+	auto p = builder.build();
+
 	EXPECT_THAT(p.RemoveTill(2), 0);
 	EXPECT_THAT(p.RemoveTill(0), -1);
-
-	p.AddTill(2, Money{ 3000 }, Money{ 500 });
 }
 
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, getting_data_from_petrolstation) {
+	auto p = builder.build();
+
 	EXPECT_THAT(p.GetBalance(), Money{ 7000 });
 	EXPECT_THAT(p.GetBuyCost(FuelType::EkoDiesel), Money{ 4 });
 	EXPECT_THAT(p.GetCurrentOpenTillsCount(), 4);
@@ -123,6 +145,8 @@ TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, getting_data_from_petrolstat
 }
 
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, getting_data_about_depots_without_cash_operations) {
+	auto p = builder.build();
+
 	EXPECT_THAT(p.GetDepotCurrentFuelAmount(1), 0);
 	EXPECT_THAT(p.GetDepotMaxFuelAmount(1), 300);
 	EXPECT_THAT(p.isDepotWorking(1), true);
@@ -131,11 +155,15 @@ TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, getting_data_about_depots_wi
 }
 
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, emptying_empty_tills) {
+	auto p = builder.build();
+
 	EXPECT_THAT(p.CheckoutTill(0),-2);
 	EXPECT_THAT(p.CheckoutTill(100), -2);
 }
 
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, unsuccessful_cash_operations) {
+	auto p = builder.build();
+
 	PetrolStation p2("Octan2", 2);
 
 	const Money initial_balance{ 7000 };
@@ -172,6 +200,8 @@ TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, unsuccessful_cash_operations
 }
 
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, refuelling_and_selling) {
+	auto p = builder.build();
+
 	EXPECT_THAT(p.AddFuel(FuelType::Diesel, 200), 0);
 	EXPECT_THAT(p.SellFuel(200, FuelType::Diesel), 0);
 	EXPECT_THAT(p.GetBalance(), Money{ 6600 });
@@ -179,6 +209,8 @@ TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, refuelling_and_selling) {
 }
 
 TEST_F(PetrolStationWithDepotsAndTillsFixtureTests, refuelling_checkout_and_closing_tills_and_salaries) {
+	auto p = builder.build();
+
 	//refuel all depots
 	EXPECT_THAT(p.RefuellAll(), 0);
 	EXPECT_THAT(p.GetBalance(), Money{ 2400 });
