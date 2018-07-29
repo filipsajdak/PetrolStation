@@ -14,16 +14,24 @@ namespace {
 			return e.GetID() == ID;
 		};
 	};
+
+	const std::map<FuelType, PetrolStation::FuelPrices>::value_type fuel_prices[] = {
+		{ FuelType::Diesel		, { Money{  4 }, Money{ 2 } }},
+		{ FuelType::TurboDiesel	, { Money{  5 }, Money{ 3 } }},
+		{ FuelType::EkoDiesel	, { Money{  6 }, Money{ 4 } }},
+		{ FuelType::Pb95		, { Money{  3 }, Money{ 1 } }},
+		{ FuelType::Pb98		, { Money{  4 }, Money{ 1 } }},
+		{ FuelType::N02			, { Money{ 10 }, Money{ 6 } }},
+	};
 }
 
-PetrolStation::PetrolStation(std::string name, int ID) : ID(ID), name(name), currentOpenTillsCount(0)
+
+PetrolStation::PetrolStation(std::string name, int ID) 
+	: ID(ID)
+	, name(name)
+	, currentOpenTillsCount(0)
+	, prices(std::begin(fuel_prices), std::end(fuel_prices))
 {
-	prices[FuelType::Diesel] = { Money{4}, Money{2} };
-	prices[FuelType::TurboDiesel] = { Money{5}, Money{3} };
-	prices[FuelType::EkoDiesel] = { Money{6}, Money{ 4 }};
-	prices[FuelType::Pb95] = { Money{3}, Money{1} };
-	prices[FuelType::Pb98] = { Money{4}, Money{1} };
-	prices[FuelType::N02] = { Money{10}, Money{6} };
 }
 
 void PetrolStation::AddEmployee(Employee emp)
