@@ -8,6 +8,8 @@ class PetrolStation;
 class Depot;
 class Till;
 
+struct RequirementsNotFulfilled {};
+
 class PetrolStationBuilder
 {
 public:
@@ -22,6 +24,7 @@ public:
 	PetrolStationBuilder & add(Employee&& employee);
 	PetrolStationBuilder & add(Depot&& depot);
 	PetrolStationBuilder & add(Till&& till);
+	PetrolStationBuilder& setNameAndID(std::string name, int ID);
 
 	PetrolStation build();
 

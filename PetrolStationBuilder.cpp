@@ -26,11 +26,21 @@ public:
 	}
 
 	PetrolStation build() {
+		if (name.empty()) 
+			throw RequirementsNotFulfilled();
+		
 		PetrolStation p(std::move(name), std::move(ID));
-		for (auto&& e : employees) p.AddEmployee(std::move(e));
-		for (auto&& d : depots) p.AddDepot(std::move(d));
-		for (auto&& t : tills) p.AddTill(std::move(t));
+		
+		move_to_product(p, employees, [](auto&& p, auto&& e) {p.AddEmployee(std::move(e)); });
+		move_to_product(p, depots, [](auto&& p, auto&& e) {p.AddDepot(std::move(e)); });
+		move_to_product(p, tills, [](auto&& p, auto&& e) {p.AddTill(std::move(e)); });
+		
 		return p;
+	}
+
+	void setNameAndID(std::string n, int i) {
+		name = n;
+		ID = i;
 	}
 
 private:
@@ -39,6 +49,12 @@ private:
 	std::vector<Employee> employees;
 	std::vector<Depot> depots;
 	std::vector<Till> tills;
+
+	template <typename T, typename F>
+	void move_to_product(PetrolStation& p, T&& c, F&& fun) {
+		T from(std::move(c));
+		for (auto&& e : from) fun(p, std::move(e));
+	}
 };
 
 PetrolStationBuilder::PetrolStationBuilder(std::string name, int ID) : pimpl{ new PetrolStationBuilderImpl(name, ID) } {}
@@ -56,6 +72,12 @@ PetrolStationBuilder& PetrolStationBuilder::add(Depot&& depot) {
 
 PetrolStationBuilder& PetrolStationBuilder::add(Till&& till) {
 	pimpl->add(std::move(till));
+	return *this;
+}
+
+PetrolStationBuilder & PetrolStationBuilder::setNameAndID(std::string name, int ID)
+{
+	pimpl->setNameAndID(std::move(name), std::move(ID));
 	return *this;
 }
 
