@@ -9,9 +9,33 @@
 #include "Depot.h"
 #include "Till.h"
 
+template <typename ProductType, typename T>
+class Gatherer {
+public:
+	template <typename Fun>
+	Gatherer(Fun&& fun) : fun(std::forward<Fun>(fun)){}
+
+	void emplace_back(T&& i) { items.emplace_back(std::forward<T>(i)); }
+
+	void move_to_product(ProductType& p) {
+		auto from(std::move(items));
+		for (auto&& e : from) fun(p, std::move(e));
+	}
+
+private:
+	void(*fun)(ProductType&, T&&);
+	std::vector<T> items;
+};
+
 class PetrolStationBuilder::PetrolStationBuilderImpl {
 public:
-	PetrolStationBuilderImpl(std::string name, int ID) : name(name), ID(ID) {}
+	PetrolStationBuilderImpl(std::string name, int ID) 
+		: name(name)
+		, ID(ID)
+		, employees([](auto& p, auto&& e) { p.AddEmployee(std::move(e)); })
+		, depots([](auto& p, auto&& e) { p.AddDepot(std::move(e)); })
+		, tills([](auto& p, auto&& e) { p.AddTill(std::move(e)); })
+	{}
 
 	void add(Employee&& e) {
 		employees.emplace_back(std::move(e));
@@ -30,10 +54,10 @@ public:
 			throw RequirementsNotFulfilled();
 		
 		PetrolStation p(std::move(name), std::move(ID));
-		
-		move_to_product(p, employees, [](auto&& p, auto&& e) {p.AddEmployee(std::move(e)); });
-		move_to_product(p, depots, [](auto&& p, auto&& e) {p.AddDepot(std::move(e)); });
-		move_to_product(p, tills, [](auto&& p, auto&& e) {p.AddTill(std::move(e)); });
+	
+		employees.move_to_product(p);
+		depots.move_to_product(p);
+		tills.move_to_product(p);
 		
 		return p;
 	}
@@ -46,15 +70,9 @@ public:
 private:
 	std::string name;
 	int ID;
-	std::vector<Employee> employees;
-	std::vector<Depot> depots;
-	std::vector<Till> tills;
-
-	template <typename T, typename F>
-	void move_to_product(PetrolStation& p, T&& c, F&& fun) {
-		T from(std::move(c));
-		for (auto&& e : from) fun(p, std::move(e));
-	}
+	Gatherer<PetrolStation, Employee> employees;
+	Gatherer<PetrolStation, Depot> depots;
+	Gatherer<PetrolStation, Till> tills;
 };
 
 PetrolStationBuilder::PetrolStationBuilder(std::string name, int ID) : pimpl{ new PetrolStationBuilderImpl(name, ID) } {}
